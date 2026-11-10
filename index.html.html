@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Absensi GPS Auto-Redirect</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; padding-top: 50px;">
+  <h2>Mengambil Lokasi Presisi...</h2>
+  <p>Mohon klik <b>ALLOW / IZINKAN</b> saat browser meminta akses lokasi.</p>
+
+  <script>
+    // 1. PASTE LINK PRE-FILL GOOGLE FORM LO DI SINI (Ganti LATLONG_HERE jadi [GPS])
+    const googleFormBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSc.../viewform?usp=pp_url&entry.123456789=";
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
+          
+          // Format data lokasi yang masuk ke Google Form (Koordinat + Link Maps)
+          const locationData = encodeURIComponent(`${lat}, ${lng} (${mapsUrl})`);
+          
+          // Redirect ke Google Form dengan lokasi yang sudah terisi otomatis
+          window.location.href = googleFormBaseUrl + locationData;
+        },
+        function(error) {
+          alert("Gagal mengambil lokasi. Mohon aktifkan GPS HP lo dan coba lagi!");
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      alert("Browser lo tidak mendukung fitur Geolocation.");
+    }
+  </script>
+</body>
+</html>
