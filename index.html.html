@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Absensi GPS Auto-Redirect</title>
+  <title>Absensi PT Teratech Data Inti</title>
 </head>
-<body style="font-family: sans-serif; text-align: center; padding-top: 50px;">
-  <h2>Mengambil Lokasi Presisi...</h2>
-  <p>Mohon klik <b>ALLOW / IZINKAN</b> saat browser meminta akses lokasi.</p>
+<body style="font-family: sans-serif; text-align: center; padding: 50px 20px; background-color: #f9f9f9;">
+  <h2 style="color: #333;">Mengambil Lokasi Presisi...</h2>
+  <p style="color: #666;">Mohon klik <b>ALLOW / IZINKAN</b> saat browser meminta akses lokasi HP Anda.</p>
 
   <script>
-    // 1. PASTE LINK PRE-FILL GOOGLE FORM LO DI SINI (Ganti LATLONG_HERE jadi [GPS])
-    const googleFormBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSc.../viewform?usp=pp_url&entry.123456789=";
+    // URL Google Form lo yang asli (tanpa angka dummy)
+    const googleFormBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLScf-_9XTxWAp6fCLRbdaNGb8FtEk0FF_SvCm9cyAMaVCnArJg/viewform?usp=pp_url&entry.257924140=";
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -20,14 +20,14 @@
           const lng = position.coords.longitude;
           const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
           
-          // Format data lokasi yang masuk ke Google Form (Koordinat + Link Maps)
+          // Format data lokasi (Koordinat + Link Google Maps)
           const locationData = encodeURIComponent(`${lat}, ${lng} (${mapsUrl})`);
           
-          // Redirect ke Google Form dengan lokasi yang sudah terisi otomatis
+          // Redirect otomatis ke Google Form dengan membawa data GPS
           window.location.href = googleFormBaseUrl + locationData;
         },
         function(error) {
-          alert("Gagal mengambil lokasi. Mohon aktifkan GPS HP lo dan coba lagi!");
+          alert("Gagal mengambil lokasi. Mohon pastikan GPS HP aktif dan klik Izinkan/Allow lokasi pada browser.");
         },
         { enableHighAccuracy: true }
       );
